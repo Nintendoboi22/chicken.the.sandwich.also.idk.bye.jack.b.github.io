@@ -1,89 +1,79 @@
-let balance = 1000;
-let bet = 0;
-let playerHand = [];
-let dealerHand = [];
-let deck = [];
+let gameOver = false;
+let userBet = 0;
+let userMoney = 1000; // Starting money
+let startTime = Date.now();
 
-function createDeck() {
-    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
-    deck = [];
-    for (let value of values) {
-        for (let i = 0; i < 4; i++) { // 4 suits, but we won't display them
-            deck.push({ value });
-        }
-    }
-}
+function displayDealerHand() {
+    const dealerHandElement = document.getElementById('dealer-hand');
+    dealerHandElement.innerHTML = '';
 
-function shuffleDeck() {
-    for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
+    if (gameOver) {
+        dealer.hand.forEach(card => {
+            dealerHandElement.innerHTML += `<div class="card">${card}</div>`;
+        });
+    } else {
+        dealerHandElement.innerHTML += `<div class="card">${dealer.hand[0]}</div>`;
+        dealerHandElement.innerHTML += `<div class="card">??</div>`;
     }
 }
 
 function startGame() {
-    createDeck();
-    shuffleDeck();
-    playerHand = [deck.pop(), deck.pop()];
-    dealerHand = [deck.pop(), deck.pop()];
-    updateUI();
+    gameOver = false;
+    // Initialize other game state variables
+    displayDealerHand();
+    updateStats();
 }
 
-function updateUI() {
-    document.getElementById('balance').innerText = balance;
-    document.getElementById('bet').innerText = bet;
-    document.getElementById('player-hand').innerText = handToString(playerHand);
-    document.getElementById('dealer-hand').innerText = dealerHandToString(dealerHand);
+function resetBet() {
+    userBet = 0;
+    document.getElementById('current-bet').innerText = userBet;
 }
 
-function handToString(hand) {
-    return hand.map(card => card.value).join(', ');
-}
+function endGame(result) {
+    gameOver = true;
+    displayDealerHand();
 
-function dealerHandToString(hand) {
-    return `${hand[0].value}, [Hidden]`;
-}
-
-document.getElementById('place-bet').addEventListener('click', () => {
-    const betAmount = parseInt(document.getElementById('bet-amount').value);
-    if (betAmount > 0 && betAmount <= balance) {
-        bet = betAmount;
-        balance -= bet;
-        startGame();
-    } else {
-        alert('Invalid bet amount');
+    if (result === 'win') {
+        userMoney += userBet * 2;
+    } else if (result === 'insurance') {
+        userMoney += userBet / 2;
     }
-});
 
-document.getElementById('hit').addEventListener('click', () => {
-    playerHand.push(deck.pop());
-    updateUI();
-});
+    userBet = 0;
+    document.getElementById('current-bet').innerText = userBet;
+    document.getElementById('user-money').innerText = userMoney;
+}
 
-document.getElementById('stand').addEventListener('click', () => {
-    // Dealer logic here
-    updateUI();
-});
+function updateStats() {
+    let timePlayed = Math.floor((Date.now() - startTime) / 60000);
+    document.getElementById('time-played').innerText = timePlayed;
+    document.getElementById('total-winnings').innerText = userMoney;
+}
 
-document.getElementById('double-down').addEventListener('click', () => {
-    if (balance >= bet) {
-        bet *= 2;
-        balance -= bet / 2;
-        playerHand.push(deck.pop());
-        updateUI();
-    } else {
-        alert('Not enough balance to double down');
+setInterval(updateStats, 1000);
+
+function checkDebt() {
+    if (userMoney < 0) {
+        document.getElementById('total-winnings').innerText = `-${Math.abs(userMoney)}`;
     }
-});
 
-document.getElementById('split').addEventListener('click', () => {
-    // Split logic here
-    updateUI();
-});
+    if (userMoney === 0) {
+        if (confirm("You have $0. Would you like to take a $1,000 loan? You must return $1,250 in 10 minutes or the game will reset.")) {
+            userMoney += 1000;
+            setTimeout(() => {
+                if (userMoney < 1250) {
+                    alert("You failed to repay the loan. The game will reset.");
+                    location.reload();
+                } else {
+                    userMoney -= 1250;
+                }
+            }, 600000); // 10 minutes
+        }
+    }
+}
 
-document.getElementById('insurance').addEventListener('click', () => {
-    // Insurance logic here
-    updateUI();
-});
+setInterval(checkDebt, 1000);
 
-startGame();
+function takeInsurance() {
+    endGame('insurance');
+}
