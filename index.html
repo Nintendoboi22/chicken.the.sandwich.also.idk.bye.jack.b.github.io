@@ -7,18 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="dealer-hand"></div>
-        <div id="player-hand"></div>
-        <button id="start-button" onclick="startGame()">Start</button>
-        <button id="reset-bet-button" onclick="resetBet()">Reset Bet</button>
-        <div id="current-bet-box">
-            Current Bet: <span id="current-bet">0</span>
+    <div id="game">
+        <div id="dealer">
+            <h2>Dealer</h2>
+            <div id="dealer-cards"></div>
         </div>
-        <div id="play-time">Play Time: <span id="time-played">0</span> minutes</div>
-        <div id="winnings">Winnings: <span id="total-winnings">0</span></div>
-        <button id="insurance-button" onclick="takeInsurance()">Insurance</button>
+        <div id="player">
+            <h2>You</h2>
+            <div id="player-cards"></div>
+        </div>
+        <div id="controls">
+            <button id="hit">Hit</button>
+            <button id="stand">Stand</button>
+            <button id="double-down">Double Down</button>
+            <button id="insurance">Insurance</button>
+            <button id="reset">Reset Game</button>
+            <button id="loan" style="display:none;">Get Loan</button>
+            <button id="change-mode">Change Game Mode</button>
+            <input type="number" id="bet" placeholder="Enter your bet">
+        </div>
+        <div id="info">
+            <p>Balance: <span id="balance">1000</span></p>
+            <p>Total Winnings: <span id="total-winnings">0</span></p>
+            <p>Playtime: <span id="playtime">0</span> seconds</p>
+        </div>
     </div>
-    <script src="script.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

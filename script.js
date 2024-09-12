@@ -1,79 +1,62 @@
-let gameOver = false;
-let userBet = 0;
-let userMoney = 1000; // Starting money
-let startTime = Date.now();
+let balance = 1000;
+let totalWinnings = 0;
+let playtime = 0;
+let gameMode = 1; // 1 for revealing 1 dealer card, 0 for none
 
-function displayDealerHand() {
-    const dealerHandElement = document.getElementById('dealer-hand');
-    dealerHandElement.innerHTML = '';
+document.getElementById('balance').innerText = balance;
+document.getElementById('total-winnings').innerText = totalWinnings;
+document.getElementById('playtime').innerText = playtime;
 
-    if (gameOver) {
-        dealer.hand.forEach(card => {
-            dealerHandElement.innerHTML += `<div class="card">${card}</div>`;
-        });
+setInterval(() => {
+    playtime++;
+    document.getElementById('playtime').innerText = playtime;
+}, 1000);
+
+document.getElementById('hit').addEventListener('click', () => {
+    // Hit logic
+});
+
+document.getElementById('stand').addEventListener('click', () => {
+    // Stand logic
+});
+
+document.getElementById('double-down').addEventListener('click', () => {
+    // Double Down logic
+});
+
+document.getElementById('insurance').addEventListener('click', () => {
+    // Insurance logic
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+    location.reload();
+});
+
+document.getElementById('loan').addEventListener('click', () => {
+    balance += 1000;
+    document.getElementById('balance').innerText = balance;
+    // Logic to repay loan
+});
+
+document.getElementById('change-mode').addEventListener('click', () => {
+    gameMode = 1 - gameMode;
+    if (gameMode === 0) {
+        document.getElementById('insurance').style.display = 'none';
     } else {
-        dealerHandElement.innerHTML += `<div class="card">${dealer.hand[0]}</div>`;
-        dealerHandElement.innerHTML += `<div class="card">??</div>`;
+        document.getElementById('insurance').style.display = 'inline';
     }
-}
+    // Logic to change game mode
+});
 
-function startGame() {
-    gameOver = false;
-    // Initialize other game state variables
-    displayDealerHand();
-    updateStats();
-}
-
-function resetBet() {
-    userBet = 0;
-    document.getElementById('current-bet').innerText = userBet;
-}
-
-function endGame(result) {
-    gameOver = true;
-    displayDealerHand();
-
-    if (result === 'win') {
-        userMoney += userBet * 2;
-    } else if (result === 'insurance') {
-        userMoney += userBet / 2;
+document.getElementById('bet').addEventListener('change', (event) => {
+    let bet = parseInt(event.target.value);
+    if (bet > balance) {
+        alert('Not enough balance!');
+    } else {
+        balance -= bet;
+        document.getElementById('balance').innerText = balance;
+        // Betting logic
     }
+});
 
-    userBet = 0;
-    document.getElementById('current-bet').innerText = userBet;
-    document.getElementById('user-money').innerText = userMoney;
-}
-
-function updateStats() {
-    let timePlayed = Math.floor((Date.now() - startTime) / 60000);
-    document.getElementById('time-played').innerText = timePlayed;
-    document.getElementById('total-winnings').innerText = userMoney;
-}
-
-setInterval(updateStats, 1000);
-
-function checkDebt() {
-    if (userMoney < 0) {
-        document.getElementById('total-winnings').innerText = `-${Math.abs(userMoney)}`;
-    }
-
-    if (userMoney === 0) {
-        if (confirm("You have $0. Would you like to take a $1,000 loan? You must return $1,250 in 10 minutes or the game will reset.")) {
-            userMoney += 1000;
-            setTimeout(() => {
-                if (userMoney < 1250) {
-                    alert("You failed to repay the loan. The game will reset.");
-                    location.reload();
-                } else {
-                    userMoney -= 1250;
-                }
-            }, 600000); // 10 minutes
-        }
-    }
-}
-
-setInterval(checkDebt, 1000);
-
-function takeInsurance() {
-    endGame('insurance');
-}
+// Additional game logic for dealing cards, checking for wins/losses, etc.
