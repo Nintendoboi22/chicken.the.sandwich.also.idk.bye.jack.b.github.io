@@ -5,7 +5,7 @@ let dealerHand = [];
 let deck = [];
 
 function createDeck() {
-    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
     deck = [];
     for (let value of values) {
         for (let i = 0; i < 4; i++) { // 4 suits, but we won't display them
