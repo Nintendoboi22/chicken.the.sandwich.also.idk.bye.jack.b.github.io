@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #2e7d32;
     color: white;
     display: flex;
@@ -11,10 +11,18 @@ body {
 
 #game {
     text-align: center;
+    background-color: #1b5e20;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .hand {
     margin: 20px;
+    padding: 10px;
+    background-color: #388e3c;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 #controls button {
@@ -23,7 +31,9 @@ body {
     background-color: #1b5e20;
     color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 #controls button:hover {
@@ -32,4 +42,9 @@ body {
 
 #currency {
     margin-top: 20px;
+}
+
+#bet-amount {
+    width: 60px;
+    text-align: center;
 }
